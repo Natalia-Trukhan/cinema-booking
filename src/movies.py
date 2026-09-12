@@ -27,7 +27,7 @@ class Movie:
             raise ValueError("Title must be at least 2 characters long!")
         if not any(letter.isalnum() for letter in cleaned_title):
             raise ValueError("Title must contain letters or numbers!")
-        return title
+        return cleaned_title
 
     @property
     def director(self) -> str:
@@ -46,7 +46,7 @@ class Movie:
             raise ValueError("Director name must be at least 2 characters long!")
         if not all(letter.isalpha() or letter in " -,.'" for letter in cleaned_director):
             raise ValueError("Director name contains invalid characters!")
-        return director
+        return cleaned_director
 
     @property
     def year(self) -> int:
