@@ -1,0 +1,69 @@
+[
+    {
+        "title": "Inception",
+        "director": "Christopher Nolan",
+        "year": 2010,
+        "genre": [
+            "Sci-Fi",
+            "Action",
+            "Thriller"
+        ],
+        "description": "A thief who steals corporate secrets through the use of dream-sharing technology.",
+        "duration": 148
+    },
+    {
+        "title": "The Shawshank Redemption",
+        "director": "Frank Darabont",
+        "year": 1994,
+        "genre": [
+            "Drama"
+        ],
+        "description": "Over the course of several years, two convicts form a friendship, seeking solace and eventual redemption.",
+        "duration": 142
+    },
+    {
+        "title": "Interstellar",
+        "director": "Christopher Nolan",
+        "year": 2014,
+        "genre": [
+            "Sci-Fi",
+            "Drama",
+            "Adventure"
+        ],
+        "description": "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+        "duration": 169
+    },
+    {
+        "title": "The Matrix",
+        "director": "Lana Wachowski",
+        "year": 1999,
+        "genre": [
+            "Sci-Fi",
+            "Action"
+        ],
+        "description": "A computer hacker learns from mysterious rebels about the true nature of his reality.",
+        "duration": 136
+    },
+    {
+        "title": "Dune",
+        "director": "Denis Villeneuve",
+        "year": 2021,
+        "genre": [
+            "Sci-Fi",
+            "Adventure"
+        ],
+        "description": "A noble family becomes embroiled in a war for control over the galaxy's most valuable asset.",
+        "duration": 155
+    },
+    {
+        "title": "Shark",
+        "director": "Natalia Chaban",
+        "year": 2021,
+        "genre": [
+            "nature",
+            "discovery"
+        ],
+        "description": "The film about relationship between sharks and people",
+        "duration": 120
+    }
+]

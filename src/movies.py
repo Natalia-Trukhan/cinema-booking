@@ -1,4 +1,7 @@
+import json
+from pathlib import Path
 from shlex import join
+from xml.etree.ElementTree import indent
 
 
 class Movie:
@@ -120,10 +123,16 @@ class Movie:
 
 class AddFilmToList:
     def __init__(self, list_movies: list[Movie]) -> None:
-        self.list_movies = list_movies
+        self.json_file = Path("film_json.json")
+        self.list_movies = self.read_from_json()
+
+        if not self.list_movies and list_movies:
+            self.list_movies = list_movies
+            self.load_to_json()
 
     def add_movie(self, movie: Movie) -> None:
         self.list_movies.append(movie)
+        self.load_to_json()
 
     def __str__(self) -> str:
         return "\n".join(str(mov) for mov in self.list_movies)
@@ -183,6 +192,39 @@ class AddFilmToList:
                 searched_film = mov
                 return searched_film
         return f"{name_of_film} not found."
+
+    def load_to_json(self):
+        data_films = [
+            {
+                "title": film.title,
+                "director": film.director,
+                "year": film.year,
+                "genre": film.genre,
+                "description": film.description,
+                "duration": film.duration
+            }
+            for film in self.list_movies
+        ]
+
+        with open(self.json_file, "w", encoding="utf-8") as file:
+            json.dump(data_films, file, ensure_ascii=False, indent=4)
+
+    def read_from_json(self) -> list[Movie]:
+        list_film = []
+        if not self.json_file.exists():
+            return []
+
+        try:
+
+            with open(self.json_file, "r", encoding="utf-8") as file:
+                read_file = json.load(file)
+            for film in read_file:
+                movie = Movie(title=film["title"], director=film["director"], year=film["year"], genre=film["genre"],
+                              description=film["description"], duration=film["duration"])
+                list_film.append(movie)
+        except (json.JSONDecodeError, KeyError):
+            return []
+        return list_film
 
 
 def prime():
@@ -263,20 +305,21 @@ Here you can see all our films:
                 print(e)
 
         match option:
-                case 1:
-                    new_film = AddFilmToList.create_new_film()
-                    add_movie.add_movie(new_film)
-                case 2:
-                    search_mov = input("Enter the name of the film to search for: ")
-                    print(add_movie.search_film(search_mov))
-                case 3:
-                    print(add_movie)
-                case 4:
-                    print("Finished!")
-                    break
-                case _:
-                    print("Invalid option.")
-                    continue
+            case 1:
+                new_film = AddFilmToList.create_new_film()
+                add_movie.add_movie(new_film)
+            case 2:
+                search_mov = input("Enter the name of the film to search for: ")
+                print(add_movie.search_film(search_mov))
+            case 3:
+                print(add_movie)
+            case 4:
+                print("Finished!")
+                break
+            case _:
+                print("Invalid option.")
+                continue
+
 
 if __name__ == "__main__":
     prime()
