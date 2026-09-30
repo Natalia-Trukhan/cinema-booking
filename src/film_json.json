@@ -45,25 +45,14 @@
         "duration": 136
     },
     {
-        "title": "Dune",
-        "director": "Denis Villeneuve",
-        "year": 2021,
-        "genre": [
-            "Sci-Fi",
-            "Adventure"
-        ],
-        "description": "A noble family becomes embroiled in a war for control over the galaxy's most valuable asset.",
-        "duration": 155
-    },
-    {
-        "title": "Shark",
-        "director": "Natalia Chaban",
-        "year": 2021,
+        "title": "Sharks and people",
+        "director": "Natalia and Kate",
+        "year": 2019,
         "genre": [
             "nature",
             "discovery"
         ],
-        "description": "The film about relationship between sharks and people",
+        "description": "Relationship between people and sharks",
         "duration": 120
     }
 ]
