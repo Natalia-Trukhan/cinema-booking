@@ -158,7 +158,7 @@ class Movie:
         return hash((self.title, self.director, self.duration, self.description, tuple(self.genre), self.year))
 
 
-class AddFilmToList:
+class OperationMovies:
     """Manages collection of movies, JSON persistence, and user operations."""
 
     def __init__(self, list_movies: list[Movie]) -> None:
@@ -286,8 +286,9 @@ class AddFilmToList:
             with open(self.json_file, "r", encoding="utf-8") as file:
                 read_file: list[dict[str, object]] = json.load(file)
             for film in read_file:
-                movie: Movie = Movie(title=str(film["title"]), director=str(film["director"]), year=int(film["year"]), genre=list(film["genre"]),
-                                    description=str(film["description"]), duration=int(film["duration"]))
+                movie: Movie = Movie(title=str(film["title"]), director=str(film["director"]), year=int(film["year"]),
+                                     genre=list(film["genre"]),
+                                     description=str(film["description"]), duration=int(film["duration"]))
                 list_film.append(movie)
         except (json.JSONDecodeError, KeyError):
             return []
@@ -333,129 +334,3 @@ class AddFilmToList:
                 break
             else:
                 break
-
-
-def prime() -> None:
-    """Main execution function displaying menu and controlling program flow."""
-    # 1. Inception
-    movie_1: Movie = Movie(
-        title="Inception",
-        director="Christopher Nolan",
-        year=2010,
-        genre=["Sci-Fi", "Action", "Thriller"],
-        description="A thief who steals corporate secrets through the use of dream-sharing technology.",
-        duration=148
-    )
-
-    # 2. The Shawshank Redemption
-    movie_2: Movie = Movie(
-        title="The Shawshank Redemption",
-        director="Frank Darabont",
-        year=1994,
-        genre=["Drama"],
-        description="Over the course of several years, two convicts form a friendship, seeking solace and eventual redemption.",
-        duration=142
-    )
-
-    # 3. Interstellar
-    movie_3: Movie = Movie(
-        title="Interstellar",
-        director="Christopher Nolan",
-        year=2014,
-        genre=["Sci-Fi", "Drama", "Adventure"],
-        description="A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
-        duration=169
-    )
-
-    # 4. The Matrix
-    movie_4: Movie = Movie(
-        title="The Matrix",
-        director="Lana Wachowski",
-        year=1999,
-        genre=["Sci-Fi", "Action"],
-        description="A computer hacker learns from mysterious rebels about the true nature of his reality.",
-        duration=136
-    )
-
-    # 5. Dune
-    movie_5: Movie = Movie(
-        title="Dune",
-        director="Denis Villeneuve",
-        year=2021,
-        genre=["Sci-Fi", "Adventure"],
-        description="A noble family becomes embroiled in a war for control over the galaxy's most valuable asset.",
-        duration=155
-    )
-
-    print("""
-Here you can see all our films:
-    """)
-    list_of_movies: list[Movie] = [movie_1, movie_2, movie_3, movie_4, movie_5]
-    add_movie: AddFilmToList = AddFilmToList(list_of_movies)
-    print(add_movie)
-    while True:
-        while True:
-            try:
-                print("""
-        Select one options:
-            1 - to add a film
-            2 - to search film
-            3 - to see all films
-            4 - to delete fim
-            5 - to exit
-            """)
-                print()
-                option: int = int(input("> "))
-                if type(option) != int:
-                    raise ValueError("Invalid option! Must be between 1 to 5!")
-                if option < 1 or option > 5:
-                    raise ValueError("Invalid option! Must be between 1 to 5!")
-                break
-            except Exception as e:
-                print(e)
-
-        match option:
-            case 1:
-                new_film: Movie | None = AddFilmToList.create_new_film()
-                if new_film:
-                    add_movie.add_movie(new_film)
-                    print("Movie successfully added!")
-            case 2:
-                while True:
-                    search_mov: str = input("Enter film or director to search (or press Enter to cancel): ").strip()
-
-                    if not search_mov:
-                        break
-
-                    results: list[Movie] = add_movie.search_film(search_mov)
-
-                    if results:
-                        print("\nFound movies:")
-                        for movie in results:
-                            print(movie)
-                        break
-                    else:
-                        print(f"'{search_mov}' not found. Please try again!\n")
-            case 3:
-                print(add_movie)
-            case 4:
-                while True:
-                    try:
-                        delete_film: str = input(
-                            "Enter the name of the film or name of director to delete (or press Enter to cancel): ")
-                        if not delete_film:
-                            break
-                        add_movie.delete_film_from_json(delete_film)
-                        break
-                    except Exception as e:
-                        print(e)
-            case 5:
-                print("Finished!")
-                break
-            case _:
-                print("Invalid option.")
-                continue
-
-
-if __name__ == "__main__":
-    prime()
