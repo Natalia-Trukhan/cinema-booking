@@ -8,7 +8,7 @@
             "Action",
             "Thriller"
         ],
-        "description": "A thief who steals corporate secrets through the use of dream-sharing technology.",
+        "description": "A thief who steals corporate secrets through dream-sharing technology.",
         "duration": 148
     },
     {
@@ -18,7 +18,7 @@
         "genre": [
             "Drama"
         ],
-        "description": "Over the course of several years, two convicts form a friendship, seeking solace and eventual redemption.",
+        "description": "Two convicts form a deep friendship over several years seeking redemption.",
         "duration": 142
     },
     {
@@ -30,7 +30,7 @@
             "Drama",
             "Adventure"
         ],
-        "description": "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+        "description": "Explorers travel through a space wormhole to save humanity.",
         "duration": 169
     },
     {
@@ -41,18 +41,29 @@
             "Sci-Fi",
             "Action"
         ],
-        "description": "A computer hacker learns from mysterious rebels about the true nature of his reality.",
+        "description": "A computer hacker learns about the true nature of his reality.",
         "duration": 136
+    },
+    {
+        "title": "Dune",
+        "director": "Denis Villeneuve",
+        "year": 2021,
+        "genre": [
+            "Sci-Fi",
+            "Adventure"
+        ],
+        "description": "A noble family becomes embroiled in a galactic resource war.",
+        "duration": 155
     },
     {
         "title": "Sharks and people",
         "director": "Natalia and Kate",
-        "year": 2019,
+        "year": 2025,
         "genre": [
             "nature",
-            "discovery"
+            "relationships"
         ],
-        "description": "Relationship between people and sharks",
+        "description": "relationships between sharks and people",
         "duration": 120
     }
 ]

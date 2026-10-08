@@ -162,7 +162,7 @@ class OperationMovies:
     """Manages collection of movies, JSON persistence, and user operations."""
 
     def __init__(self, list_movies: list[Movie]) -> None:
-        self.json_file: Path = Path("film_json.json")
+        self.json_file: Path = Path("film_list.json")
         self.list_movies: list[Movie] = self.read_from_json()
 
         # Initialize JSON file with default movies if storage is empty
@@ -184,7 +184,7 @@ class OperationMovies:
         """Prompt user interactively to collect inputs and instantiate a new Movie object."""
         while True:
             try:
-                title: str = input("Title: ")
+                title: str = input("Title (or press Enter to return): ")
                 if not title:
                     print("Creation cancelled.")
                     return None
@@ -194,7 +194,7 @@ class OperationMovies:
                 print(e)
         while True:
             try:
-                director: str = input("Director: ")
+                director: str = input("Director (or press Enter to return): ")
                 if not director:
                     print("Creation cancelled.")
                     return None
@@ -204,7 +204,7 @@ class OperationMovies:
                 print(e)
         while True:
             try:
-                year_move: str = input("Year: ")
+                year_move: str = input("Year (or press Enter to return): ")
                 if not year_move:
                     print("Creation cancelled.")
                     return None
@@ -216,7 +216,7 @@ class OperationMovies:
 
         while True:
             try:
-                genre: str = input("Genre(fiction, romance, etc): ")
+                genre: str = input("Genre(fiction, romance, etc) (or press Enter to return): ")
                 if not genre:
                     print("Creation cancelled.")
                     return None
@@ -228,7 +228,7 @@ class OperationMovies:
                 print(e)
         while True:
             try:
-                description: str = input("Description: ")
+                description: str = input("Description (or press Enter to return): ")
                 if not description:
                     print("Creation cancelled.")
                     return None
@@ -238,7 +238,7 @@ class OperationMovies:
                 print(e)
         while True:
             try:
-                duration_film: str = input("Duration (minutes): ")
+                duration_film: str = input("Duration (minutes) (or press Enter to return): ")
                 if not duration_film:
                     print("Creation cancelled.")
                     return None
@@ -334,3 +334,139 @@ class OperationMovies:
                 break
             else:
                 break
+
+class FavoriteManager:
+    """Manages user's favorite movies collection and JSON persistence."""
+
+    def __init__(self, operation_movies: OperationMovies) -> None:
+        """Initialize FavoriteManager with reference to main movie catalog."""
+        self.path_favorite_movie: Path = Path('favorite_movie.json')
+        self.operation_movies: OperationMovies = operation_movies
+        self.list_favor_mov: list[Movie] = self.read_favorite_movie_from_json()
+
+    def add_favorite_film_to_json(self) -> None:
+        """Prompt user for title and director, search main catalog, and save to favorites."""
+        while True:
+            try:
+                print("Enter the film name and the director name to add to favorite films\n")
+                name_film: str = input("Film name (or press Enter to cancel)> ").strip()
+                if not name_film:
+                    print("Operation cancelled.")
+                    return None
+                Movie.validate_title(name_film)
+
+                name_dir: str = input("Director name (or press Enter to cancel)> ").strip()
+                if not name_dir:
+                    print("Operation cancelled.")
+                    return None
+                Movie.validate_director(name_dir)
+
+                # Search for matching movie object in the main catalog
+                found_movie: Movie | None = None
+                for film in self.operation_movies.list_movies:
+                    if film.title.lower() == name_film.lower() and film.director.lower() == name_dir.lower():
+                        found_movie = film
+                        break
+
+                if not found_movie:
+                    print(f"\nMovie '{name_film}' by director '{name_dir}' was not found in the main catalog!")
+                    continue
+
+                # Prevent duplicate entries in favorites
+                if found_movie in self.list_favor_mov:
+                    print(f"\n'{found_movie.title}' is already in your favorites!")
+                    return
+
+                # Append matching movie and persist changes
+                self.list_favor_mov.append(found_movie)
+                self.save_favorite_movie_to_json()
+                print(f"\nMovie '{found_movie.title}' successfully added to favorites!")
+                print("\nYour favorite films list:")
+                for f in self.list_favor_mov:
+                    print(f)
+                break
+
+            except Exception as e:
+                print(f"Error: {e}")
+
+    def delete_favorite_film_from_json(self) -> None:
+        """Prompt user for title and director, then remove matching movie from favorites."""
+        print("There are favorite films:")
+        for mov in self.list_favor_mov:
+            print(mov)
+        print()
+        while True:
+            try:
+                print('Enter the film name and the director name to delete from favorite list\n')
+                name_film: str = input("Film name (or press Enter to cancel)> ").strip()
+                if not name_film:
+                    print("Operation cancelled.")
+                    return None
+                Movie.validate_title(name_film)
+
+                name_dir: str = input("Director name (or press Enter to cancel)> ").strip()
+                if not name_dir:
+                    print("Operation cancelled.")
+                    return None
+                Movie.validate_director(name_dir)
+
+                delete_film: Movie | None = None
+
+                # Find and remove target movie from favorites
+                for f in self.list_favor_mov:
+                    if f.title.lower() == name_film.lower() and f.director.lower() == name_dir.lower():
+                        delete_film = f
+                        self.list_favor_mov.remove(delete_film)
+                        self.save_favorite_movie_to_json()
+                        print(f"The film {delete_film.title} was successfully deleted.")
+                        print("\nYour favorite films list:")
+                        for fav in self.list_favor_mov:
+                            print(fav)
+                        return None
+
+                if delete_film is None:
+                    print(f"The film {name_film} was not found in your favorite list!")
+                    return None
+            except Exception as e:
+                print(f"Error: {e}")
+
+    def save_favorite_movie_to_json(self) -> None:
+        """Serialize favorites list into structured dictionary format and write to JSON file."""
+        data: list[dict[str, object]] = [
+            {
+                "title": m.title,
+                "director": m.director,
+                "year": m.year,
+                "genre": m.genre,
+                "description": m.description,
+                "duration": m.duration
+            }
+            for m in self.list_favor_mov
+        ]
+
+        with open(self.path_favorite_movie, "w", encoding="utf-8") as file:
+            json.dump(data, file, ensure_ascii=False, indent=4)
+
+    def read_favorite_movie_from_json(self) -> list[Movie]:
+        """Load and deserialize favorite movies from JSON file into list of Movie objects."""
+        list_mov: list[Movie] = []
+        if not self.path_favorite_movie.exists():
+            return []
+
+        try:
+            with open(self.path_favorite_movie, "r", encoding="utf-8") as file:
+                read_mov: list[dict[str, object]] = json.load(file)
+            for film in read_mov:
+                mov: Movie = Movie(
+                    title=str(film["title"]),
+                    director=str(film["director"]),
+                    year=int(film["year"]),
+                    genre=list(film["genre"]),
+                    description=str(film["description"]),
+                    duration=int(film["duration"])
+                )
+                list_mov.append(mov)
+
+        except (json.JSONDecodeError, KeyError):
+            return []
+        return list_mov

@@ -1,5 +1,6 @@
 from movies import Movie, OperationMovies
 from src.booking import BookingMovie, BookingManager
+from src.movies import FavoriteManager
 
 
 def prime() -> None:
@@ -54,6 +55,7 @@ def prime() -> None:
     print("\n--- Welcome! Available Movies ---")
     list_of_movies: list[Movie] = [movie_1, movie_2, movie_3, movie_4, movie_5]
     add_movie: OperationMovies = OperationMovies(list_of_movies)
+    favor_manager: FavoriteManager = FavoriteManager(add_movie)
     print(add_movie)
 
     # Main Application Loop
@@ -70,15 +72,17 @@ def prime() -> None:
         5 - Book tickets
         6 - Check booking status by customer name
         7 - Cancel ticket booking
-        8 - Exit
+        8 - Add a favorite film 
+        9 - Delete a favorite film
+        10 - Exit
                 """)
                 user_input: str = input("> ").strip()
                 if not user_input.isdigit():
                     raise ValueError("Input must be a valid integer number!")
 
                 option: int = int(user_input)
-                if option < 1 or option > 8:
-                    raise ValueError("Invalid option range! Must be between 1 and 8.")
+                if option < 1 or option > 10:
+                    raise ValueError("Invalid option range! Must be between 1 and 10.")
                 break
             except ValueError as e:
                 print(f"Error: {e}")
@@ -173,9 +177,12 @@ def prime() -> None:
                     print(cancellation_result)
 
             case 8:
+                favor_manager.add_favorite_film_to_json()
+            case 9:
+                favor_manager.delete_favorite_film_from_json()
+            case 10:
                 print("Finished! Exiting application.")
                 break
-
             case _:
                 print("Invalid option selected.")
                 continue
