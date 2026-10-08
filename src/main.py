@@ -3,101 +3,101 @@ from src.booking import BookingMovie, BookingManager
 
 
 def prime() -> None:
-    """Main execution function displaying menu and controlling program flow."""
-    # 1. Inception
+    """Main execution entry point displaying interactive menu and controlling app logic."""
+
+    # Pre-populate sample movies list
     movie_1: Movie = Movie(
         title="Inception",
         director="Christopher Nolan",
         year=2010,
         genre=["Sci-Fi", "Action", "Thriller"],
-        description="A thief who steals corporate secrets through the use of dream-sharing technology.",
-        duration=148
+        description="A thief who steals corporate secrets through dream-sharing technology.",
+        duration=148,
     )
 
-    # 2. The Shawshank Redemption
     movie_2: Movie = Movie(
         title="The Shawshank Redemption",
         director="Frank Darabont",
         year=1994,
         genre=["Drama"],
-        description="Over the course of several years, two convicts form a friendship, seeking solace and eventual redemption.",
-        duration=142
+        description="Two convicts form a deep friendship over several years seeking redemption.",
+        duration=142,
     )
 
-    # 3. Interstellar
     movie_3: Movie = Movie(
         title="Interstellar",
         director="Christopher Nolan",
         year=2014,
         genre=["Sci-Fi", "Drama", "Adventure"],
-        description="A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
-        duration=169
+        description="Explorers travel through a space wormhole to save humanity.",
+        duration=169,
     )
 
-    # 4. The Matrix
     movie_4: Movie = Movie(
         title="The Matrix",
         director="Lana Wachowski",
         year=1999,
         genre=["Sci-Fi", "Action"],
-        description="A computer hacker learns from mysterious rebels about the true nature of his reality.",
-        duration=136
+        description="A computer hacker learns about the true nature of his reality.",
+        duration=136,
     )
 
-    # 5. Dune
     movie_5: Movie = Movie(
         title="Dune",
         director="Denis Villeneuve",
         year=2021,
         genre=["Sci-Fi", "Adventure"],
-        description="A noble family becomes embroiled in a war for control over the galaxy's most valuable asset.",
-        duration=155
+        description="A noble family becomes embroiled in a galactic resource war.",
+        duration=155,
     )
 
-    print("""
-Here you can see all our films:
-    """)
+    print("\n--- Welcome! Available Movies ---")
     list_of_movies: list[Movie] = [movie_1, movie_2, movie_3, movie_4, movie_5]
     add_movie: OperationMovies = OperationMovies(list_of_movies)
     print(add_movie)
+
+    # Main Application Loop
     while True:
+        # Loop for reliable user choice validation
         while True:
             try:
                 print("""
-        Select one options:
-            1 - to add a film
-            2 - to search film
-            3 - to see all films
-            4 - to delete fim
-            5 - to book tickets
-            6 - to cancel booking tickets
-            7 - to exit
-            """)
-                print()
-                option: int = int(input("> "))
-                if type(option) != int:
-                    raise ValueError("Invalid option! Must be between 1 to 7!")
-                if option < 1 or option > 7:
-                    raise ValueError("Invalid option! Must be between 1 to 7!")
-                break
-            except Exception as e:
-                print(e)
+    Select an option:
+        1 - Add a film
+        2 - Search film
+        3 - Display all films
+        4 - Delete a film
+        5 - Book tickets
+        6 - Check booking status by customer name
+        7 - Cancel ticket booking
+        8 - Exit
+                """)
+                user_input: str = input("> ").strip()
+                if not user_input.isdigit():
+                    raise ValueError("Input must be a valid integer number!")
 
+                option: int = int(user_input)
+                if option < 1 or option > 8:
+                    raise ValueError("Invalid option range! Must be between 1 and 8.")
+                break
+            except ValueError as e:
+                print(f"Error: {e}")
+
+        # Action Handler based on user selected menu option
         match option:
             case 1:
                 new_film: Movie | None = OperationMovies.create_new_film()
                 if new_film:
                     add_movie.add_movie(new_film)
                     print("Movie successfully added!")
+
             case 2:
                 while True:
                     search_mov: str = input("Enter film or director to search (or press Enter to cancel): ").strip()
-
                     if not search_mov:
                         break
 
                     results: list[Movie] = add_movie.search_film(search_mov)
-
                     if results:
                         print("\nFound movies:")
                         for movie in results:
@@ -105,65 +105,79 @@ Here you can see all our films:
                         break
                     else:
                         print(f"'{search_mov}' not found. Please try again!\n")
+
             case 3:
+                print("\nList of all available movies:")
                 print(add_movie)
+
             case 4:
                 while True:
                     try:
                         delete_film: str = input(
-                            "Enter the name of the film or name of director to delete (or press Enter to cancel): ")
+                            "Enter film name or director to delete (or press Enter to cancel): "
+                        ).strip()
                         if not delete_film:
                             break
                         add_movie.delete_film_from_json(delete_film)
+                        print("Movie deleted successfully.")
                         break
                     except Exception as e:
-                        print(e)
+                        print(f"Error: {e}")
 
             case 5:
-                print("Select movie to book from the list:")
+                print("\nAvailable movies for booking:")
                 print(add_movie)
                 print()
 
-                book_manager = BookingManager()
-                new_book = BookingMovie.create_new_booking()
+                book_manager: BookingManager = BookingManager()
+                new_book: BookingMovie | None = BookingMovie.create_new_booking()
 
                 if new_book:
                     book_manager.add_customer(new_book)
-                    list_custom = book_manager.get_user_booking(new_book.customer_name)
-                    print("\nYour booking details:")
+                    list_custom: list[BookingMovie] = book_manager.get_user_booking(new_book.customer_name)
+                    print("\nYour updated booking details:")
                     for booking in list_custom:
                         print(booking)
 
+            case 6:
                 while True:
                     print()
                     try:
-                        name_cus = input(
-                            "Enter customer name to search active bookings (or press Enter to return to menu): "
+                        name_cus: str = input(
+                            "Enter customer name to search active bookings (or press Enter to return): "
                         ).strip()
 
                         if not name_cus:
                             break
 
-                        list_cus = book_manager.get_user_booking(name_cus)
+                        book_manager: BookingManager = BookingManager()
+                        list_cus: list[BookingMovie] = book_manager.get_user_booking(name_cus)
 
                         if list_cus:
-                            print(f"\nBooking details for '{name_cus}':")
+                            print(f"\nActive booking details for '{name_cus}':")
                             for booking in list_cus:
                                 print(booking)
+                            break
                         else:
                             print(f"No bookings found for '{name_cus}'.")
                             continue
-
 
                     except Exception as e:
                         print(f"Error: {e}")
                         continue
 
             case 7:
-                print("Finished!")
+                cancel_manager: BookingManager = BookingManager()
+                cancellation_result: str | None = cancel_manager.cancel_booking()
+                if cancellation_result:
+                    print(cancellation_result)
+
+            case 8:
+                print("Finished! Exiting application.")
                 break
+
             case _:
-                print("Invalid option.")
+                print("Invalid option selected.")
                 continue
 
 

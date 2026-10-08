@@ -3,5 +3,10 @@
         "customer_name": "Natalia",
         "movie_name": "Sharks and people",
         "number_tickets": 2
+    },
+    {
+        "customer_name": "Natalia",
+        "movie_name": "The Shawshank Redemption",
+        "number_tickets": 2
     }
 ]
