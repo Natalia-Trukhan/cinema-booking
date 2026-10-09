@@ -375,12 +375,14 @@ class OperationMovies:
                     new_film = mov
                     film_to_remove = mov
                     new_film.total_num_tickets = new_num_tickets
-                else:
-                    print(f"The movie {name_mov} is not found.")
+                    break
+
             if new_film and film_to_remove:
                 op.list_movies.remove(film_to_remove)
                 op.list_movies.append(new_film)
                 op.load_to_json()
+            else:
+                print(f"The movie {name_mov} is not found.")
         except Exception as e:
             print(e)
 
