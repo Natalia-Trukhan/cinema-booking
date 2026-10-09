@@ -2,7 +2,7 @@ from movies import Movie, OperationMovies
 from src.booking import BookingMovie, BookingManager
 from src.movies import FavoriteManager
 
-
+# temporary test string
 def prime() -> None:
     """Main execution entry point displaying interactive menu and controlling app logic."""
 
