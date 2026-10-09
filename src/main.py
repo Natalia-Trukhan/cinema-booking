@@ -64,7 +64,7 @@ def prime() -> None:
         while True:
             try:
                 print("""
-    Select an option:
+    Select an option from the list:
         1 - Add a film
         2 - Search a film
         3 - Display all films
