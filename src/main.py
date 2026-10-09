@@ -14,6 +14,7 @@ def prime() -> None:
         genre=["Sci-Fi", "Action", "Thriller"],
         description="A thief who steals corporate secrets through dream-sharing technology.",
         duration=148,
+        total_num_tickets=150
     )
 
     movie_2: Movie = Movie(
@@ -23,6 +24,7 @@ def prime() -> None:
         genre=["Drama"],
         description="Two convicts form a deep friendship over several years seeking redemption.",
         duration=142,
+        total_num_tickets=150
     )
 
     movie_3: Movie = Movie(
@@ -32,6 +34,7 @@ def prime() -> None:
         genre=["Sci-Fi", "Drama", "Adventure"],
         description="Explorers travel through a space wormhole to save humanity.",
         duration=169,
+        total_num_tickets=150
     )
 
     movie_4: Movie = Movie(
@@ -41,6 +44,7 @@ def prime() -> None:
         genre=["Sci-Fi", "Action"],
         description="A computer hacker learns about the true nature of his reality.",
         duration=136,
+        total_num_tickets=150
     )
 
     movie_5: Movie = Movie(
@@ -50,6 +54,7 @@ def prime() -> None:
         genre=["Sci-Fi", "Adventure"],
         description="A noble family becomes embroiled in a galactic resource war.",
         duration=155,
+        total_num_tickets=150
     )
 
     print("\n--- Welcome! Available Movies ---")
@@ -74,15 +79,16 @@ def prime() -> None:
         7 - Cancel booking
         8 - Add to favorites 
         9 - Remove from favorites
-        10 - Exit
+        10 - to show statistics
+        11 - Exit
                 """)
                 user_input: str = input("> ").strip()
                 if not user_input.isdigit():
                     raise ValueError("Input must be a valid integer number!")
 
                 option: int = int(user_input)
-                if option < 1 or option > 10:
-                    raise ValueError("Invalid option range! Must be between 1 and 10.")
+                if option < 1 or option > 11:
+                    raise ValueError("Invalid option range! Must be between 1 and 11.")
                 break
             except ValueError as e:
                 print(f"Error: {e}")
@@ -111,6 +117,7 @@ def prime() -> None:
                         print(f"'{search_mov}' not found. Please try again!\n")
 
             case 3:
+                add_movie.read_from_json()
                 print("\nList of all available movies:")
                 print(add_movie)
 
@@ -181,6 +188,25 @@ def prime() -> None:
             case 9:
                 favor_manager.delete_favorite_film_from_json()
             case 10:
+                book_manager = BookingManager()
+
+                # 1. Total amount films (through __len__)
+                total_movies: int = len(add_movie)
+
+                # 2. Total amount booked films
+                total_booked_tickets: int = book_manager.calculate_number_booking()
+
+                # 3. Total amount available tickets
+                total_available_tickets: int = add_movie.calculate_num_tickets()
+
+                print("\n" + "=" * 35)
+                print("       MOVIE APP STATISTICS       ")
+                print("=" * 35)
+                print(f" Total movies in catalog: {total_movies}")
+                print(f" Total booked tickets:   {total_booked_tickets}")
+                print(f" Total free tickets left:{total_available_tickets}")
+                print("=" * 35 + "\n")
+            case 11:
                 print("Finished! Exiting application.")
                 break
             case _:

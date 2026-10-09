@@ -5,13 +5,14 @@ from pathlib import Path
 class Movie:
     """Represents a movie entity with properties and validation rules."""
 
-    def __init__(self, title: str, director: str, year: int, genre: list[str], description: str, duration: int) -> None:
+    def __init__(self, title: str, director: str, year: int, genre: list[str], description: str, duration: int, total_num_tickets: int=150) -> None:
         self.title: str = title
         self.director: str = director
         self.year: int = year
         self.genre: list[str] = genre
         self.description: str = description
         self.duration: int = duration
+        self.total_num_tickets = total_num_tickets
 
     # --- Title Property & Validation ---
     @property
@@ -135,15 +136,31 @@ class Movie:
     @staticmethod
     def validate_duration(duration: int) -> int:
         """Validate duration integer constraints."""
-        if type(duration) != int:
+        if not isinstance(duration, int):
             raise ValueError("Duration can be an integer only!")
         if duration <= 0:
             raise ValueError("Duration must be larger than 0!")
         return duration
 
+    @staticmethod
+    def validate_num_tickets(num_tickets: int) -> int:
+        if not isinstance(num_tickets, int):
+            raise ValueError("Tickets number must be integer")
+        return num_tickets
+
+    @property
+    def total_num_tickets(self) -> int:
+        return self.__total_num_tickets
+
+    @total_num_tickets.setter
+    def total_num_tickets(self, num_tickets):
+        self.__total_num_tickets = self.validate_num_tickets(num_tickets)
+
     def __str__(self) -> str:
         """Return formatted string representation of the movie."""
-        return f"Title={self.title}, director={self.director}, year={self.year}, genre={self.genre}, description={self.description}, duration={self.duration}"
+        return (f"Title={self.title}, director={self.director}, "
+                f"year={self.year}, genre={self.genre}, description={self.description}, "
+                f"duration={self.duration}, total_num_tickets={self.total_num_tickets}")
 
     def __eq__(self, other: object) -> bool:
         """Check equality between two Movie objects."""
@@ -169,6 +186,13 @@ class OperationMovies:
         if not self.list_movies and list_movies:
             self.list_movies = list_movies
             self.load_to_json()
+
+    def __len__(self) -> int:
+        return len(self.list_movies)
+
+    def calculate_num_tickets(self) -> int:
+        return sum(valid_ticket.total_num_tickets for valid_ticket in self.list_movies)
+
 
     def add_movie(self, movie: Movie) -> None:
         """Append a new movie to the collection and save to JSON file."""
@@ -249,7 +273,7 @@ class OperationMovies:
                 print(e)
         return Movie(title=title, director=director, year=year, genre=new_list_genres,
                      description=description,
-                     duration=duration)
+                     duration=duration, total_num_tickets=150)
 
     def search_film(self, name_of_film: str) -> list[Movie]:
         """Search movies matching title or director substring."""
@@ -268,7 +292,8 @@ class OperationMovies:
                 "year": film.year,
                 "genre": film.genre,
                 "description": film.description,
-                "duration": film.duration
+                "duration": film.duration,
+                "total_num_tickets": film.total_num_tickets
             }
             for film in self.list_movies
         ]
@@ -288,7 +313,8 @@ class OperationMovies:
             for film in read_file:
                 movie: Movie = Movie(title=str(film["title"]), director=str(film["director"]), year=int(film["year"]),
                                      genre=list(film["genre"]),
-                                     description=str(film["description"]), duration=int(film["duration"]))
+                                     description=str(film["description"]),
+                                     duration=int(film["duration"]), total_num_tickets=int(film["total_num_tickets"]),)
                 list_film.append(movie)
         except (json.JSONDecodeError, KeyError):
             return []
@@ -334,6 +360,29 @@ class OperationMovies:
                 break
             else:
                 break
+
+
+    @classmethod
+    def calculate_available_tickets(cls, name_mov: str, count_sold: int):
+        op = cls([])
+        new_film: Movie|None = None
+        film_to_remove: Movie|None = None
+        try:
+            for mov in op.list_movies:
+                if mov.title.lower() == name_mov.strip().lower():
+                    new_num_tickets = Movie.validate_num_tickets(mov.total_num_tickets) - count_sold
+                    Movie.validate_num_tickets(new_num_tickets)
+                    new_film = mov
+                    film_to_remove = mov
+                    new_film.total_num_tickets = new_num_tickets
+                else:
+                    print(f"The movie {name_mov} is not found.")
+            if new_film and film_to_remove:
+                op.list_movies.remove(film_to_remove)
+                op.list_movies.append(new_film)
+                op.load_to_json()
+        except Exception as e:
+            print(e)
 
 class FavoriteManager:
     """Manages user's favorite movies collection and JSON persistence."""
@@ -439,7 +488,8 @@ class FavoriteManager:
                 "year": m.year,
                 "genre": m.genre,
                 "description": m.description,
-                "duration": m.duration
+                "duration": m.duration,
+                "total_num_tickets": m.total_num_tickets,
             }
             for m in self.list_favor_mov
         ]
@@ -463,7 +513,8 @@ class FavoriteManager:
                     year=int(film["year"]),
                     genre=list(film["genre"]),
                     description=str(film["description"]),
-                    duration=int(film["duration"])
+                    duration=int(film["duration"]),
+                    total_num_tickets=int(film["total_num_tickets"]),
                 )
                 list_mov.append(mov)
 

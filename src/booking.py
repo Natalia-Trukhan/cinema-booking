@@ -1,5 +1,6 @@
 import json
 from pathlib import Path  # Standard library class for platform-independent file path handling
+import movies
 
 
 class BookingMovie:
@@ -139,10 +140,11 @@ class BookingMovie:
                 if not num_tickets_str:
                     print("Creation cancelled.")
                     return None
-
                 num_tickets: int = int(num_tickets_str)
                 BookingMovie.validate_number_tickets(num_tickets)
-                break
+                if num_tickets and selected_mov:
+                    movies.OperationMovies.calculate_available_tickets(selected_mov, num_tickets)
+                    break
             except ValueError as e:
                 print(f"Error: {e}. Please enter a valid number.")
 
@@ -164,6 +166,10 @@ class BookingManager:
     def __repr__(self) -> str:
         """Return developer-facing representation of internal list."""
         return repr(self.list_customer)
+
+    def calculate_number_booking(self) -> int:
+        return sum(num_book.number_tickets for num_book in self.list_customer)
+
 
     def save_booking_list_to_json(self) -> None:
         """Serialize the list of BookingMovie objects into JSON format and write to disk."""
