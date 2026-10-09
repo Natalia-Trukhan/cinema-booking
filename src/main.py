@@ -66,14 +66,14 @@ def prime() -> None:
                 print("""
     Select an option:
         1 - Add a film
-        2 - Search film
+        2 - Search a film
         3 - Display all films
         4 - Delete a film
         5 - Book tickets
-        6 - Check booking status by customer name
-        7 - Cancel ticket booking
-        8 - Add a favorite film 
-        9 - Delete a favorite film
+        6 - Check booking 
+        7 - Cancel booking
+        8 - Add to favorites 
+        9 - Remove from favorites
         10 - Exit
                 """)
                 user_input: str = input("> ").strip()
