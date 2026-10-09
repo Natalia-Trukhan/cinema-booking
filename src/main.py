@@ -74,15 +74,16 @@ def prime() -> None:
         7 - Cancel booking
         8 - Add to favorites 
         9 - Remove from favorites
-        10 - Exit
+        10 - calculate discount
+        11 - Exit
                 """)
                 user_input: str = input("> ").strip()
                 if not user_input.isdigit():
                     raise ValueError("Input must be a valid integer number!")
 
                 option: int = int(user_input)
-                if option < 1 or option > 10:
-                    raise ValueError("Invalid option range! Must be between 1 and 10.")
+                if option < 1 or option > 11:
+                    raise ValueError("Invalid option range! Must be between 1 and 11.")
                 break
             except ValueError as e:
                 print(f"Error: {e}")
@@ -181,6 +182,41 @@ def prime() -> None:
             case 9:
                 favor_manager.delete_favorite_film_from_json()
             case 10:
+
+                try:
+                    while True:
+                        price: float | str = input("Enter price (or press Enter to stop): ")
+                        if not price:
+                            break
+                        price: float = float(price)
+                        if price <= 0:
+                            print("Price must be greater than 0!")
+                            continue
+                        if price > 0:
+                            break
+
+                    if price:
+
+                        while True:
+                            discount_percent: float | str = input(
+                                "Enter discount percentage (or press Enter to stop): ")
+                            if not discount_percent:
+                                break
+                            discount_percent: float = float(discount_percent)
+                            if discount_percent <= 0:
+                                print("Discount percentage must be greater than 0!")
+                                continue
+                            if discount_percent > 0:
+                                break
+                        if price and discount_percent:
+                            discount = BookingMovie.calculate_discount(price, discount_percent)
+                            print(f"Discounted price: {discount}")
+
+                except ValueError:
+                    print("Error: Please enter valid numeric values!")
+                except Exception as e:
+                    print(f"Error: {e}")
+            case 11:
                 print("Finished! Exiting application.")
                 break
             case _:
