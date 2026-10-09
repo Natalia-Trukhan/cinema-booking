@@ -148,6 +148,11 @@ class BookingMovie:
 
         return BookingMovie(selected_mov, name_customer, num_tickets)
 
+    @staticmethod
+    def calculate_discount(price: float, discount_percent: float) -> float:
+        """Calculate discounted ticket price."""
+        return price * (1 - discount_percent / 100)
+
 
 class BookingManager:
     """Manages the collection of active bookings and handles JSON file storage operations."""
