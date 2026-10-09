@@ -64,17 +64,18 @@ def prime() -> None:
         while True:
             try:
                 print("""
-    Select an option:
-        1 - Add a film
-        2 - Search film
-        3 - Display all films
-        4 - Delete a film
-        5 - Book tickets
-        6 - Check booking status by customer name
-        7 - Cancel ticket booking
-        8 - Add a favorite film 
-        9 - Delete a favorite film
-        10 - Exit
+    === MOVIE APP MENU ===
+    [1] Add Movie
+    [2] Search
+    [3] All Movies
+    [4] Delete Movie
+    [5] Book Ticket
+    [6] Check Booking
+    [7] Cancel Booking
+    [8] Add Favorite
+    [9] Delete Favorite
+    [10] Exit
+    ======================
                 """)
                 user_input: str = input("> ").strip()
                 if not user_input.isdigit():
