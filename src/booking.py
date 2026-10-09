@@ -240,56 +240,55 @@ class BookingManager:
                 list_user.append(booking)
         return list_user
 
-    def cancel_booking(self) -> str | None:
-        """
-        Interactive workflow allowing a user to cancel a specific booking by movie title and name.
 
-        Returns:
-            str | None: Cancellation confirmation message or None if cancelled.
-        """
-        while True:
-            try:
-                name_user: str = input("Enter customer name to cancel (or press Enter to return): ").strip()
-                if not name_user:
-                    print("Cancellation rejected.")
-                    return None
+def cancel_booking(self) -> str | None:
+    """
+    Interactive workflow allowing a user to cancel a specific booking by movie title and name.
 
-                BookingMovie.validate_name(name_user)
+    Returns:
+        str | None: Cancellation confirmation message or None if cancelled.
+    """
+    while True:
+        try:
+            name_user: str = input("Enter customer name to cancel (or press Enter to return): ").strip()
+            if not name_user:
+                print("Cancellation rejected.")
+                return None
 
-                # Filter user bookings
-                user_bookings: list[BookingMovie] = [
-                    u for u in self.list_customer if u.customer_name.lower() == name_user.lower()
-                ]
+            BookingMovie.validate_name(name_user)
 
-                if not user_bookings:
-                    print(f"No active bookings found for '{name_user}'. Please try again.")
-                    continue
+            user_bookings: list[BookingMovie] = []
+            for b in self.list_customer:
+                if b.customer_name.lower() == name_user.lower():
+                    user_bookings.append(b)
 
-                print("\nActive bookings for this user:")
-                for b in user_bookings:
-                    print(f"- {b}")
+            if not user_bookings:
+                print(f"No active bookings found for '{name_user}'. Please try again.")
+                continue
 
-                name_mov: str = input("\nEnter film name to cancel (or press Enter to return): ").strip()
-                if not name_mov:
-                    print("Cancellation rejected.")
-                    return None
+            print("\nActive bookings for this user:")
+            for b in user_bookings:
+                print(f"- {b}")
 
-                BookingMovie.validate_name(name_mov)
+            name_mov: str = input("\nEnter film name to cancel (or press Enter to return): ").strip()
+            if not name_mov:
+                print("Cancellation rejected.")
+                return None
 
-                # Remove matching booking entries
-                initial_count: int = len(self.list_customer)
-                self.list_customer = [
-                    us for us in self.list_customer
-                    if not (us.customer_name.lower() == name_user.lower() and us.movie_name.lower() == name_mov.lower())
-                ]
+            BookingMovie.validate_name(name_mov)
 
-                if len(self.list_customer) < initial_count:
+            for booking in self.list_customer:
+                if booking.customer_name.lower() == name_user.lower() and booking.movie_name.lower() == name_mov.lower():
+                    # Restore tickets count back to film_list.json
+                    movies.OperationMovies.calculate_available_tickets(name_mov, -booking.number_tickets)
+
+                    self.list_customer.remove(booking)
                     self.save_booking_list_to_json()
                     return f"Booking for '{name_user}' with movie '{name_mov}' successfully cancelled."
-                else:
-                    print(f"No movie matching '{name_mov}' was found for this user.")
-                    return None
 
-            except ValueError as e:
-                print(f"Error: {e}")
-                continue
+            print(f"No movie matching '{name_mov}' was found for this user.")
+            return None
+
+        except ValueError as e:
+            print(f"Error: {e}")
+            continue
